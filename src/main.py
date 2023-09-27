@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-data_path = "data/"
+data_path = "../data/"
 
 # reading data
 solar_df = pd.read_csv(data_path + "SolarIrradiance.csv")

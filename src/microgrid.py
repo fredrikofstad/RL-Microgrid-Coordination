@@ -1,5 +1,9 @@
+"""
+Configuration file for the microgrid
+function create_microgrid() returns the microgrid with the specified configuration
+"""
+
 import numpy as np
-import pandas as pd
 
 from pymgrid import Microgrid
 from pymgrid.modules import (
@@ -10,50 +14,56 @@ from pymgrid.modules import (
 
 np.random.seed(5460)
 
-small_battery = BatteryModule(min_capacity=10,
-                              max_capacity=100,
-                              max_charge=50,
-                              max_discharge=50,
-                              efficiency=0.9,
-                              init_soc=0.2)
 
-large_battery = BatteryModule(min_capacity=10,
-                              max_capacity=1000,
-                              max_charge=10,
-                              max_discharge=10,
-                              efficiency=0.7,
-                              init_soc=0.2)
+def create_microgrid():
 
-load_ts = 100+100*np.random.rand(24*90)  # random load data in the range [100, 200].
-pv_ts = 200*np.random.rand(24*90)  # random pv data in the range [0, 200].
+    small_battery = BatteryModule(min_capacity=10,
+                                  max_capacity=100,
+                                  max_charge=50,
+                                  max_discharge=50,
+                                  efficiency=0.9,
+                                  init_soc=0.2)
 
-load = LoadModule(time_series=load_ts)
+    large_battery = BatteryModule(min_capacity=10,
+                                  max_capacity=1000,
+                                  max_charge=10,
+                                  max_discharge=10,
+                                  efficiency=0.7,
+                                  init_soc=0.2)
 
-pv = RenewableModule(time_series=pv_ts)
+    load_ts = 100+100*np.random.rand(24*90)  # random load data in the range [100, 200].
+    pv_ts = 200*np.random.rand(24*90)  # random pv data in the range [0, 200].
 
-grid_ts = [0.2, 0.1, 0.5] * np.ones((24*90, 3))
+    load = LoadModule(time_series=load_ts)
 
-grid = GridModule(max_import=100,
-                  max_export=100,
-                  time_series=grid_ts)
+    pv = RenewableModule(time_series=pv_ts)
 
-modules = [
-    small_battery,
-    large_battery,
-    ('pv', pv),
-    load,
-    grid]
+    grid_ts = [0.2, 0.1, 0.5] * np.ones((24*90, 3))
 
-microgrid = Microgrid(modules)
+    grid = GridModule(max_import=100,
+                      max_export=100,
+                      time_series=grid_ts)
 
-#print(microgrid)
-#print(microgrid.modules.pv)
-#print(microgrid.modules.grid is microgrid.modules['grid'])
+    modules = [
+        small_battery,
+        large_battery,
+        ('pv', pv),
+        load,
+        grid]
 
-# print(microgrid.controllable)
+    return Microgrid(modules)
+
+
+# Testing microgrid creation
+if __name__ == "__main__":
+    microgrid = create_microgrid()
+    print(microgrid)
+    print(microgrid.modules.pv)
+    print(microgrid.modules.grid is microgrid.modules['grid'])
+
+    print(microgrid.controllable)
 
 # All none have to be replaced to control the microgrid
-# print(microgrid.get_empty_action())
+    print(microgrid.get_empty_action())
 
-microgrid.reset()
-print(microgrid.state_series().to_frame())
+    print(microgrid.state_series().to_frame())

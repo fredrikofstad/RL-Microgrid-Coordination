@@ -9,7 +9,7 @@ the energy load
 """
 
 import numpy as np
-from load import Data
+from data import *
 
 from pymgrid import Microgrid
 from pymgrid.modules import (
@@ -22,7 +22,7 @@ np.random.seed(5460)
 
 
 def create_microgrid(load_ts, renewable_ts, grid_ts):
-
+    # fill in with correct values
     battery = BatteryModule(min_capacity=10,
                             max_capacity=100,
                             max_charge=50,
@@ -51,8 +51,10 @@ def create_microgrid(load_ts, renewable_ts, grid_ts):
 
 # Testing microgrid creation
 if __name__ == "__main__":
-    d = Data()
-    microgrid = create_microgrid(d.residential_df, d.wind_df, d.consumption_df)
+    load_ts = 100+100*np.random.rand(24*182)  # how to get 25/100 households ?
+    microgrid = create_microgrid(load_ts,
+                                 wind_ts,
+                                 consumption_ts)
 
     print(microgrid.controllable)
 

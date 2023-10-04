@@ -59,15 +59,12 @@ electrical_generator_efficiency = 0.95
 # =3.6^3*10^6 RP_w_numerical W =3.6^3 RP_w_numerical MegaWatt #
 rated_power_wind_turbine_original =\
     (0.5 * density_of_air * np.pi
-     * radius_wind_turbine_blade
-     * radius_wind_turbine_blade
-     * average_wind_speed
-     * average_wind_speed
-     * average_wind_speed
+     * radius_wind_turbine_blade ** 2
+     * average_wind_speed ** 3
      * power_coefficient
      * gearbox_transmission_efficiency
      * electrical_generator_efficiency)
-rated_power_wind_turbine = rated_power_wind_turbine_original / (3.6*3.6*3.6)
+rated_power_wind_turbine = rated_power_wind_turbine_original / (3.6**3)
 # the number of wind turbine in the onsite generation system , N_w#
 number_windturbine = 1
 # the number of generators , n_g#

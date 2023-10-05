@@ -9,6 +9,7 @@ battery_config = {
     "capacity": 300/1000,
     "soc_max": 0.95,
     "soc_min": 0.05,
+    "efficiency": 0.95,
 }
 
 wind_config = {

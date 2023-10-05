@@ -14,3 +14,7 @@ class SolarPV(Module):
         if self.working_status:
             return solar_irradiance * self.area_solarPV * self.efficiency_solarPV / 1000
         return 0
+
+    def operational_cost(self, solar_irradiance):
+        return self.energy_generated(solar_irradiance) + self.unit_operational_cost_solar
+

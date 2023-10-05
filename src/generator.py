@@ -13,3 +13,6 @@ class Generator(Module):
         if self.working_status:
             return self.amount * self.rated_output_power_generator
         return 0
+
+    def operational_cost(self):
+        return self.energy_generated() + self.unit_operational_cost_generator

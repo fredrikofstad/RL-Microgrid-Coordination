@@ -2,8 +2,8 @@ import numpy as np
 
 
 class Battery:
-    def __init__(self, operational_cost, capacity, soc_max, soc_min, efficiency):
-        self.operational_cost = operational_cost
+    def __init__(self, cost, capacity, soc_max, soc_min, efficiency):
+        self.cost = cost
         self.capacity = capacity
         self.soc_max = soc_max * capacity
         self.soc_min = soc_min * capacity
@@ -14,14 +14,30 @@ class Battery:
     def soc_status(self):
         return self.soc
 
+    def reset(self):
+        self.soc = 0
+
     def charge(self, charged, use):
         self.charged = charged
         self.soc += charged * self.efficiency
         self.soc -= use / self.efficiency
         self.soc = np.clip(self.soc, self.soc_min, self.soc_max)
 
+    def charge_full(self):
+        charge = self.soc_max - self.soc
+        self.soc = self.soc_max
+        return charge
+
+    def support_load(self, battery_actions):
+        # support the load with available charge
+        if battery_actions == 1:
+            support = self.soc * self.efficiency
+            self.soc = 0
+            return support
+        return 0
+
     def operational_cost(self):
-        return self.charged * self.operational_cost / (2 * self.capacity * (self.soc_max - self.soc_min))
+        return self.charged * self.cost / (2 * self.capacity * (self.soc_max - self.soc_min))
 
 
 if __name__ == "__main__":

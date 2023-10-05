@@ -1,5 +1,4 @@
-from module import Module
-
+from src.modules.module import Module
 
 class SolarPV(Module):
 

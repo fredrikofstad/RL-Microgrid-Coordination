@@ -15,5 +15,5 @@ class Module:
     def turn_off(self):
         self.working_status = False
 
-    def working_status(self):
+    def get_working_status(self):
         return 1 if self.working_status else 0

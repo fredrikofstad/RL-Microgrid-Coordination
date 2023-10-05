@@ -1,5 +1,5 @@
 import numpy as np
-from module import Module
+from src.modules.module import Module
 
 class WindTurbine(Module):
     def __init__(self, amount, cutin_windspeed, cutoff_windspeed, rated_windspeed, unit_operational_cost_wind,

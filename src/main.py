@@ -2,10 +2,12 @@ from src.modules.battery import Battery
 from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
 from src.modules.generator import Generator
+import gymnasium as gym
+from src.environment import MicrogridEnv
 from microgrid import Microgrid
 
 battery_config = {
-    "operational_cost": 0.95/10,
+    "cost": 0.95/10,
     "capacity": 300/1000,
     "soc_max": 0.95,
     "soc_min": 0.05,
@@ -13,7 +15,7 @@ battery_config = {
 }
 
 wind_config = {
-    "amount": 1, # amount of turbines
+    "amount": 1,  # amount of turbines
     "cutin_windspeed": 3*3.6,    # (km/h =1/3.6 m/s)
     "cutoff_windspeed": 11*3.6,  # (km/h =1/3.6 m/s), v^co#
     "rated_windspeed": 7*3.6,    # (km/h =1/3.6 m/s), v^r#
@@ -38,7 +40,6 @@ generator_config = {
     "rated_output_power_generator": 60/1000,  # ( MegaWatt =1000 kW), G_p#
 }
 
-# TODO: specify households
 # TODO: specify solar, or wind and solar
 
 if __name__ == "__main__":
@@ -48,5 +49,20 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
         Generator(**generator_config)
     )
+
+    env = MicrogridEnv(microgrid, 25)
+    observation, info = env.reset()
+
+    for _ in range(100):
+        action = env.action_space.sample()  # agent policy that uses the observation and info
+        observation, reward, terminated, truncated, info = env.step(action)
+
+        if terminated or truncated:
+            observation, info = env.reset()
+
+    env.close()
+
+
+
 
 

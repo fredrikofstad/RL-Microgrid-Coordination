@@ -13,7 +13,7 @@ battery_config = {
 }
 
 wind_config = {
-    "amount": 1,
+    "amount": 1, # amount of turbines
     "cutin_windspeed": 3*3.6,    # (km/h =1/3.6 m/s)
     "cutoff_windspeed": 11*3.6,  # (km/h =1/3.6 m/s), v^co#
     "rated_windspeed": 7*3.6,    # (km/h =1/3.6 m/s), v^r#
@@ -33,11 +33,13 @@ solar_config = {
 }
 
 generator_config = {
-    "amount": 1,
+    "amount": 1, # amount of generators
     "unit_operational_cost_generator": 0.55/10,  # (10^4 $/ MegaWattHour =10 $/ kWHour ), r_omc ^g#
     "rated_output_power_generator": 60/1000,  # ( MegaWatt =1000 kW), G_p#
 }
 
+# TODO: specify households
+# TODO: specify solar, or wind and solar
 
 if __name__ == "__main__":
     microgrid = Microgrid(

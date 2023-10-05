@@ -1,7 +1,7 @@
-from battery import Battery
-from wind import WindTurbine
-from solar import SolarPV
-from generator import Generator
+from src.modules.battery import Battery
+from src.modules.wind import WindTurbine
+from src.modules.solar import SolarPV
+from src.modules.generator import Generator
 from microgrid import Microgrid
 
 battery_config = {

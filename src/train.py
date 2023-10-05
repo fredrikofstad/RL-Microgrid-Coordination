@@ -1,31 +1,32 @@
-from garage.experiment.deterministic import set_seed
-from garage.np.exploration_policies import EpsilonGreedyPolicy
-from garage.replay_buffer import PathBuffer
-from garage.sampler import LocalSampler, RaySampler
-from garage.tf.policies import CategoricalMLPPolicy
-from garage.torch.algos.dqn import DQN
-from garage.torch.policies import DiscreteQFArgmaxPolicy
-from garage.torch.q_functions import DiscreteMLPQFunction
+""" training from stable ?? """
 
-from garage.trainer import Trainer
+import numpy as np
+import gym
+from gym import spaces
 
-import pandas as pd
+seed = 5460
+class MicrogridEnv(gym.Env):
+    def __init__(self):
+        super(MicrogridEnv, self).__init__()
 
-from pymgrid_config import *
+        # action space (change status 3, solar 2, wind 2, generator 2, grid 2 battery 1
+        self.action_space = spaces.MultiDiscrete([3, 2, 2, 2, 2, 1])
 
-from pymgrid.envs import DiscreteMicrogridEnv
+        # Define observation space
+        # observations:
+        # data: [solar, wind, price, load, status of modules, charge]
+        low =  [0,  0,  0,  0,   0, 0, 0, 0]  # Lower bounds
+        high = [10, 10, 10, 100, 1, 1, 1, 1]  # Upper bounds
+        self.observation_space = spaces.Box(low=np.array(low), high=np.array(high), dtype=np.float32)
 
-env = DiscreteMicrogridEnv.from_microgrid(create_microgrid())
+    def step(self, action):
+        # Handle the action and return the new observation, reward, done, and info
+        pass
 
+    def reset(self, seed=seed):
+        # Reset the environment to its initial state and return the initial observation
+        pass
 
-def step():
-    pass
-    # turn off or on energy generation from solar, PV, wind turbine, gas generator
-    # we can use this energy to 1) support energy load 2) sell back to utility grid 3) store in battery
-    # purchase energy from utility grid for energy load or to charge battery
-    # battery can also support energy load
-
-"""The microgrid system model consists of battery, wind turbine, solar PV, and gas turbine
-generator. The microgrid is connected with the utility grid, and provides energy supply for
-the energy load"""
-
+    def render(self, mode='human'):
+        # Implement the render method
+        pass

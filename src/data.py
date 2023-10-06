@@ -21,7 +21,7 @@ class Data:
         self.index = 0
 
     def is_complete(self):
-        return self.index == len(self.solar_ts)
+        return self.index == len(self.solar_ts) - 2
 
     def get_observation(self):
         index = self.index

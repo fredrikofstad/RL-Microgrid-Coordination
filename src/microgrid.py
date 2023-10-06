@@ -6,8 +6,7 @@ class Microgrid(object):
         self.solar = solar
         self.generator = generator
 
-    def actions(self, actions, solar_actions, wind_actions, generator_actions, grid_actions, battery_actions,
-                wind_speed):
+    def actions(self, actions, wind_speed):
         # do solar
         self.solar.set(actions[0])
         # do wind
@@ -39,15 +38,16 @@ class Microgrid(object):
         charge = 0
         module_actions = [solar_actions, wind_actions, generator_actions]
         modules = [self.solar, self.wind, self.generator]
-        vars = [solar_irradiance, wind_speed, None]
+        data = [solar_irradiance, wind_speed, None]
         for i, action in enumerate(module_actions):
             if action == 0:
-                total_load - modules[i].energy_generated(vars[i])
+                total_load - modules[i].energy_generated(data[i])
             if action == 1:
                 # TODO:P u g (t) is the sell-back price to the utility grid, which is fixed as 0.2 × 104$/MW h. ???
-                sell_back_reward + modules[i].energy_generated(vars[i]) * energy_price
+                # ask about the units: 0.2 vs 0.06
+                sell_back_reward + modules[i].energy_generated(data[i]) * energy_price
             if action == 2:
-                charge = modules[i].energy_generated(vars[i])
+                charge = modules[i].energy_generated(data[i])
         self.battery.charge(charge, battery_actions)
         total_load - self.battery.support_load(battery_actions)
 
@@ -58,8 +58,9 @@ class Microgrid(object):
             energy_purchased += self.battery.charge_full() * energy_price
 
         # TODO: what happens if the grid doesn't get enough power to power houses?
+        # Current assumption: grid needs to buy the remaining power for total load
         energy_purchased += total_load
         operational_cost = self.operational_cost(solar_irradiance, wind_speed)
 
-        return energy_purchased + operational_cost - sell_back_reward
+        return -(energy_purchased + operational_cost - sell_back_reward)
 

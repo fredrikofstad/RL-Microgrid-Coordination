@@ -2,9 +2,9 @@ from src.modules.battery import Battery
 from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
 from src.modules.generator import Generator
-import gymnasium as gym
 from src.environment import MicrogridEnv
 from microgrid import Microgrid
+import agents.sb3_agent as sb3
 
 battery_config = {
     "cost": 0.95/10,
@@ -42,6 +42,31 @@ generator_config = {
 
 # TODO: specify solar, or wind and solar
 
+
+def random_actor(env):
+    observation, info = env.reset()
+    score = 0
+    i = 0
+    terminated = False
+    while not terminated:
+        action = env.action_space.sample()
+        print(action)
+        observation, reward, terminated, truncated, info = env.step(action)
+        print(observation)
+        print(reward)
+        score += reward
+        i += 1
+    print("random actor:")
+    print(score/i)
+
+    env.close()
+
+
+def baseline_agent(env):
+    print("trained actor")
+    sb3.train(env)
+
+
 if __name__ == "__main__":
     microgrid = Microgrid(
         Battery(**battery_config),
@@ -51,16 +76,17 @@ if __name__ == "__main__":
     )
 
     env = MicrogridEnv(microgrid, 25)
-    observation, info = env.reset()
 
-    for _ in range(100):
-        action = env.action_space.sample()  # agent policy that uses the observation and info
-        observation, reward, terminated, truncated, info = env.step(action)
 
-        if terminated or truncated:
-            observation, info = env.reset()
+    random_actor(env)
+    #baseline_agent(env)
+    #deep_actor(env)
 
-    env.close()
+
+
+
+
+
 
 
 

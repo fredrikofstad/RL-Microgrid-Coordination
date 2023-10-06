@@ -8,17 +8,21 @@ from src.data import Data
 
 
 class MicrogridEnv(gym.Env):
-    def __init__(self, microgrid, household_num):
+    def __init__(self, microgrid, household_num, discreet=False):
         super(MicrogridEnv, self).__init__()
 
         # setup
         self.microgrid = microgrid
         self.data = Data(household_num)
+        self.discreet = discreet
 
         # action space (change status 3, solar 3, wind 3, generator 3, grid 3 battery 1
-        #self.n_actions = [2,2,2,3,3,3,3,1]
-        #self.action_space = spaces.Discrete(np.prod(self.n_actions))
-        self.action_space = spaces.MultiDiscrete([2,2,2,3,3,3,3,1])
+        self.n_actions = (2,2,2,3,3,3,3,1)
+
+        if discreet:
+            self.action_space = spaces.Discrete(np.prod(self.n_actions))
+        else:
+            self.action_space = spaces.MultiDiscrete(list(self.n_actions))
         self.observation = []
 
         # Define observation space
@@ -31,14 +35,16 @@ class MicrogridEnv(gym.Env):
 
     def step(self, action):
         # Handle the action
-        #mapping = tuple(np.ndindex(self.n_actions))
-        #action = mapping[action]
+        if self.discreet:
+            mapping = tuple(np.ndindex(self.n_actions))
+            action = mapping[action]
         actions = action[0:3]
         solar_actions = action[3]
         wind_actions = action[4]
         generator_actions = action[5]
         grid_actions = action[6]
         battery_actions = action[7]
+
         # data: [solar, wind, price, load, status of modules, charge]
         solar_irradiance = self.observation[0]
         wind_speed = self.observation[1]

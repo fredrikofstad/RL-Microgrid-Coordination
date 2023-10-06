@@ -1,3 +1,5 @@
+from stable_baselines3 import DQN
+
 from src.modules.battery import Battery
 from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
@@ -62,9 +64,14 @@ def random_actor(env):
     env.close()
 
 
-def baseline_agent(env):
+def baseline_agent_ppo(env, timesteps, name):
     print("trained actor")
-    sb3.train(env)
+    sb3.train_ppo(env, timesteps, name)
+
+
+def baseline_agent_dqn(env, timesteps, name):
+    print("trained actor")
+    sb3.train_dqn(env, timesteps, name)
 
 
 if __name__ == "__main__":
@@ -75,12 +82,16 @@ if __name__ == "__main__":
         Generator(**generator_config)
     )
 
-    env = MicrogridEnv(microgrid, 25)
+    env = MicrogridEnv(microgrid, 100)
+    env_dqn = MicrogridEnv(microgrid, 100, True)
+
 
 
     random_actor(env)
-    #baseline_agent(env)
+    #baseline_agent_ppo(env, 30000)
     #deep_actor(env)
+    #baseline_agent_dqn(env_dqn, 100000, "Dqn-100h")
+
 
 
 

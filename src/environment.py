@@ -35,10 +35,11 @@ class MicrogridEnv(gym.Env):
 
     def step(self, action):
         # Handle the action
-        if self.discreet:
+        if self.discreet:  # needs to be discreet for dqn
             mapping = tuple(np.ndindex(self.n_actions))
             action = mapping[action]
-        actions = action[0:3]
+
+        module_actions = action[0:3]
         solar_actions = action[3]
         wind_actions = action[4]
         generator_actions = action[5]
@@ -50,11 +51,12 @@ class MicrogridEnv(gym.Env):
         wind_speed = self.observation[1]
         price = self.observation[2]
         load = self.observation[3]
-        self.microgrid.actions(actions, wind_speed)
 
+        self.microgrid.actions(module_actions, wind_speed)
         # return the new observation, reward, if terminated, and info
         reward = self.microgrid.reward(solar_actions, wind_actions, generator_actions, grid_actions,
                                        battery_actions, solar_irradiance, wind_speed, price, load)
+
         terminated = self.data.is_complete()
         info = self.get_info()
         self.observation = [*self.data.get_observation(), *self.microgrid.status()]

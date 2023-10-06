@@ -6,7 +6,7 @@ from src.modules.solar import SolarPV
 from src.modules.generator import Generator
 from src.environment import MicrogridEnv
 from microgrid import Microgrid
-import agents.sb3_agent as sb3
+from agents.sb3_agent import *
 
 battery_config = {
     "cost": 0.95/10,
@@ -42,8 +42,6 @@ generator_config = {
     "rated_output_power_generator": 60/1000,  # ( MegaWatt =1000 kW), G_p#
 }
 
-# TODO: specify solar, or wind and solar
-
 
 def random_actor(env):
     observation, info = env.reset()
@@ -52,45 +50,45 @@ def random_actor(env):
     terminated = False
     while not terminated:
         action = env.action_space.sample()
-        print(action)
         observation, reward, terminated, truncated, info = env.step(action)
-        print(observation)
-        print(reward)
         score += reward
         i += 1
     print("random actor:")
-    print(score/i)
+    print(f"Average per hour:{score/i} Total: {score}")
 
     env.close()
 
 
 def baseline_agent_ppo(env, timesteps, name):
-    print("trained actor")
-    sb3.train_ppo(env, timesteps, name)
+    name = train_ppo(env, timesteps, name)
+    test_model(env, name, PPO)
 
 
 def baseline_agent_dqn(env, timesteps, name):
-    print("trained actor")
-    sb3.train_dqn(env, timesteps, name)
+    name = train_dqn(env, timesteps, name)
+    test_model(env, name, DQN)
 
 
 if __name__ == "__main__":
-    microgrid = Microgrid(
+    microgrid_full = Microgrid(
         Battery(**battery_config),
-        WindTurbine(**wind_config),
         SolarPV(**solar_config),
+        WindTurbine(**wind_config),
         Generator(**generator_config)
     )
 
-    env = MicrogridEnv(microgrid, 100)
-    env_dqn = MicrogridEnv(microgrid, 100, True)
+    microgrid_solar = Microgrid(
+        Battery(**battery_config),
+        SolarPV(**solar_config),
+    )
 
-
+    env = MicrogridEnv(microgrid_full, 100)
+    env_dqn = MicrogridEnv(microgrid_full, 100, True)
 
     random_actor(env)
-    #baseline_agent_ppo(env, 30000)
     #deep_actor(env)
-    #baseline_agent_dqn(env_dqn, 100000, "Dqn-100h")
+    baseline_agent_ppo(env, 10000, "PPO-full_10000")
+    baseline_agent_dqn(env_dqn, 10000, "DQN-full_10000")
 
 
 

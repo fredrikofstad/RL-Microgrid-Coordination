@@ -6,9 +6,9 @@ import csv
 data_path = "../data/"
 residential_path = data_path + "residential/"
 
-solar_df = pd.read_csv(data_path + "SolarIrradiance.csv", header=None)
-wind_df = pd.read_csv(data_path + "WindSpeed.csv", header=None)
-energy_price_df = pd.read_csv(data_path + "rate_consumption_charge.csv", header=None)
+solar_df = pd.read_csv(data_path + "SolarIrradiance.csv")
+wind_df = pd.read_csv(data_path + "WindSpeed.csv")
+energy_price_df = pd.read_csv(data_path + "rate_consumption_charge.csv")
 
 
 class Data:
@@ -50,6 +50,8 @@ class Data:
 if __name__ == "__main__":
     print("---Test---")
     data = Data(1)
+    print(data.solar_ts[0])    # 25
+    print(len(data.solar_ts))   #8640
     print(data.solar_ts[111])        # 275
     print(data.wind_ts[111])         # 3.5
     print(data.energy_price_ts[111])  # 0.06

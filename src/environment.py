@@ -24,9 +24,13 @@ class MicrogridEnv(gym.Env):
         else:
             self.action_space = spaces.MultiDiscrete(list(self.n_actions))
         self.observation = []
+        self.reward = 0
 
         # Define observation space
         # observations:
+
+        #TODO: Do i need status of modules?
+
         # [solar,  wind, price, load, status of modules, charge]
 
         low = [0, 0, 0, 0, 0, 0, 0, 0]  # Lower bounds
@@ -54,13 +58,13 @@ class MicrogridEnv(gym.Env):
 
         self.microgrid.actions(module_actions, wind_speed)
         # return the new observation, reward, if terminated, and info
-        reward = self.microgrid.reward(solar_actions, wind_actions, generator_actions, grid_actions,
+        self.reward = self.microgrid.reward(solar_actions, wind_actions, generator_actions, grid_actions,
                                        battery_actions, solar_irradiance, wind_speed, price, load)
 
         terminated = self.data.is_complete()
         info = self.get_info()
         self.observation = [*self.data.get_observation(), *self.microgrid.status()]
-        return self.observation, reward, terminated, False, info
+        return self.observation, self.reward, terminated, False, info
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -75,6 +79,7 @@ class MicrogridEnv(gym.Env):
 
     def get_info(self):
         return {
-            "iteration": self.data.index
+            "iteration": self.data.index,
+            "reward": self.reward
         }
 

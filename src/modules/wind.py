@@ -4,13 +4,14 @@ from src.modules.module import Module
 class WindTurbine(Module):
     def __init__(self, amount, cutin_windspeed, cutoff_windspeed, rated_windspeed, unit_operational_cost_wind,
                  density_of_air, radius_wind_turbine_blade, average_wind_speed, power_coefficient,
-                 gearbox_transmission_efficiency, electrical_generator_efficiency):
+                 gearbox_transmission_efficiency, electrical_generator_efficiency, delta_t=1):
         super().__init__()
         self.amount = amount
         self.cutin_windspeed = cutin_windspeed   # (km/h =1/3.6 m/s)
         self.cutoff_windspeed = cutoff_windspeed  # (km/h =1/3.6 m/s), v^co#
         self.rated_windspeed = rated_windspeed   # (km/h =1/3.6 m/s), v^r#
         self.unit_operational_cost_wind = unit_operational_cost_wind
+        self.delta_t = delta_t
 
         self.rated_power_wind_turbine = (0.5 * density_of_air * np.pi
                                          * radius_wind_turbine_blade ** 2
@@ -34,7 +35,7 @@ class WindTurbine(Module):
                     (wind_speed - self.cutin_windspeed) / (self.rated_windspeed - self.cutin_windspeed))
 
         elif self.cutoff_windspeed > wind_speed >= self.rated_windspeed:
-            return self.amount * self.rated_power_wind_turbine
+            return self.amount * self.rated_power_wind_turbine * self.delta_t
         else:
             return 0
 

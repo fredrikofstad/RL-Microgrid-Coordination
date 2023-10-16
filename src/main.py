@@ -3,6 +3,7 @@ from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
 from src.modules.generator import Generator
 from src.environment import MicrogridEnv
+from src.plotting import plot_results
 from microgrid import Microgrid
 from agents.sb3_agent import *
 
@@ -58,13 +59,13 @@ def random_actor(env):
 
 
 def baseline_agent_ppo(env, timesteps, name):
-    name = train_ppo(env, timesteps, name)
-    test_model(env, name, PPO)
-
+    #train_ppo(env, timesteps, name)
+    info_matrix = test_model(env, name, PPO)
+    plot_results(env, info_matrix)
 
 
 def baseline_agent_dqn(env, timesteps, name):
-    name = train_dqn(env, timesteps, name)
+    train_dqn(env, timesteps, name)
     test_model(env, name, DQN)
 
 

@@ -26,10 +26,13 @@ class Data:
     def get_observation(self):
         index = self.index
         self.index += 1
-        return self.solar_ts[index], self.wind_ts[index], self.energy_price_ts[index], self.total_load_ts[index]
+        return self.solar_ts[index], self.wind_ts[index], self.energy_price_ts[index]*10, self.total_load_ts[index]
 
     def reset(self):
         self.index = 0
+
+    def length(self):
+        return len(self.solar_ts) - 2
 
     def make_total_load(self, household_number):
         csv_files = [file for file in os.listdir(residential_path) if file.endswith('.csv')][:household_number]
@@ -39,11 +42,11 @@ class Data:
                 reader = csv.reader(f)
 
                 for i, row in enumerate(islice(reader, 1, len(wind_df)+1)):
-                    value = float(row[1] + row[2] + row[3] + row[4] +row[5])
+                    value = float(row[1])
                     if i == len(total_load):
-                        total_load.append(value)
+                        total_load.append(value)  # converting units
                     else:
-                        total_load[i] += float(value)
+                        total_load[i] += float(value) # conver
         return total_load
 
 

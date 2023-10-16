@@ -1,4 +1,3 @@
-
 class Microgrid(object):
     def __init__(self, battery, solar=None, wind=None, generator=None, new_cost_equation=False):
         self.battery = battery
@@ -7,6 +6,9 @@ class Microgrid(object):
         self.generator = generator
         self.modules = [self.solar, self.wind, self.generator]
         self.new_cost_equation = new_cost_equation
+        self.sell_back = 0
+        # could make into an argument
+        self.sellback_price = 0.2  # constant sell back price
 
     def actions(self, actions, wind_speed):
         # do solar
@@ -21,12 +23,12 @@ class Microgrid(object):
 
     def reset(self):
         self.battery.reset()
+        self.sell_back = 0
 
     def status(self):
         solar = self.solar.get_working_status() if self.solar is not None else 0
         wind = self.wind.get_working_status() if self.wind is not None else 0
         generator = self.generator.get_working_status() if self.generator is not None else 0
-        # TODO: Do we really need the status??
 
         return solar, wind, generator, self.battery.soc_status()
 
@@ -43,9 +45,15 @@ class Microgrid(object):
 
     def cost_of_energy_purchase(self, total_load, energy_price):
         if self.new_cost_equation:
-            0.25 * total_load**2 * energy_price + 0.5 * total_load * energy_price
+            return 0.25 * total_load**2 * energy_price + 0.5 * total_load * energy_price
         return total_load * energy_price
 
+    def get_info(self, solar_irradiance, wind_speed):
+        return (self.solar.energy_generated(solar_irradiance),
+                self.wind.energy_generated(wind_speed),
+                self.generator.energy_generated(None),
+                self.sell_back,
+                self.operational_cost(solar_irradiance, wind_speed))
 
     def reward(self, solar_actions, wind_actions, generator_actions, grid_actions,
                battery_actions, solar_irradiance, wind_speed, energy_price, total_load):
@@ -61,9 +69,7 @@ class Microgrid(object):
             if action == 0:
                 total_load - self.modules[i].energy_generated(data[i])
             if action == 1:
-                # TODO:P u g (t) is the sell-back price to the utility grid, which is fixed as 0.2 × 104$/MW h. ???
-                # ask about the units: 0.2 vs 0.06
-                sell_back_reward + self.modules[i].energy_generated(data[i]) * energy_price
+                sell_back_reward + self.modules[i].energy_generated(data[i]) * self.sellback_price
             if action == 2:
                 charge = self.modules[i].energy_generated(data[i])
         self.battery.charge(charge, battery_actions)
@@ -76,9 +82,9 @@ class Microgrid(object):
             energy_purchased += self.battery.charge_full() * energy_price
 
         # Current assumption: grid needs to buy the remaining power for total load
-        self.cost_of_energy_purchase(total_load, energy_price)
-        energy_purchased += total_load  # TODO: change equation
+        energy_purchased = self.cost_of_energy_purchase(total_load, energy_price)
         operational_cost = self.operational_cost(solar_irradiance, wind_speed)
+        self.sell_back = sell_back_reward
 
         return -(energy_purchased + operational_cost - sell_back_reward)
 

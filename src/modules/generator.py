@@ -15,4 +15,4 @@ class Generator(Module):
         return 0
 
     def operational_cost(self, _):
-        return self.energy_generated(None) + self.unit_operational_cost_generator
+        return self.energy_generated(None) * self.unit_operational_cost_generator

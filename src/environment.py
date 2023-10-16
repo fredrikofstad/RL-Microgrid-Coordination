@@ -15,7 +15,7 @@ class MicrogridEnv(gym.Env):
         self.discreet = discreet
 
         # action space (change status 3, solar 3, wind 3, generator 3, grid 3 battery 1
-        self.n_actions = (2, 2, 2, 3, 3, 3, 3, 1)
+        self.n_actions = (2, 2, 2, 3, 3, 3, 3, 2)
 
         if discreet:
             self.action_space = spaces.Discrete(np.prod(self.n_actions))
@@ -26,8 +26,6 @@ class MicrogridEnv(gym.Env):
 
         # Define observation space
         # observations:
-
-        # TODO: Do i need status of modules?
 
         # [solar,  wind, price, load, status of modules, charge]
 
@@ -76,7 +74,17 @@ class MicrogridEnv(gym.Env):
         return self.observation, info
 
     def get_info(self):
+        solar, wind, generator, sell_back, operational_cost = self.microgrid.get_info(self.observation[0],
+                                                                                      self.observation[1])
         return {
             "iteration": self.data.index,
-            "reward": self.reward
+            "reward": self.reward,
+            "solar_energy": solar,
+            "wind_energy": wind,
+            "generator_energy": generator,
+            "sell_back": sell_back,
+            "operational_cost": operational_cost
         }
+
+    def data_len(self):
+        return self.data.length()

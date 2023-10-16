@@ -40,5 +40,5 @@ class WindTurbine(Module):
             return 0
 
     def operational_cost(self, wind_speed):
-        return self.energy_generated(wind_speed) + self.unit_operational_cost_wind
+        return self.energy_generated(wind_speed) * self.unit_operational_cost_wind
 

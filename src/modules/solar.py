@@ -16,5 +16,5 @@ class SolarPV(Module):
         return 0
 
     def operational_cost(self, solar_irradiance):
-        return self.energy_generated(solar_irradiance) + self.unit_operational_cost_solar
+        return self.energy_generated(solar_irradiance) * self.unit_operational_cost_solar
 

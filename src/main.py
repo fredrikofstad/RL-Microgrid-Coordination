@@ -1,5 +1,3 @@
-from stable_baselines3 import DQN
-
 from src.modules.battery import Battery
 from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
@@ -32,7 +30,7 @@ wind_config = {
 
 solar_config = {
     "unit_operational_cost_solar": 0.15/10,  # from solar PV (10^4 $/ MegaWattHour =10 $/ kWHour ), r_omc ^s#
-    "area_solarPV": 1400/(1000*1000),  # (km ^2=1000*1000 m^2) , a#
+    "area_solarPV": 1400 / (1000*1000),  # (km ^2=1000*1000 m^2) , a#
     "efficiency_solarPV": 0.2,  # delta
 }
 
@@ -64,6 +62,7 @@ def baseline_agent_ppo(env, timesteps, name):
     test_model(env, name, PPO)
 
 
+
 def baseline_agent_dqn(env, timesteps, name):
     name = train_dqn(env, timesteps, name)
     test_model(env, name, DQN)
@@ -75,7 +74,7 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
         WindTurbine(**wind_config),
         Generator(**generator_config),
-        False
+        True
     )
 
     microgrid_solar = Microgrid(
@@ -83,22 +82,12 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
     )
 
-    env = MicrogridEnv(microgrid_full, 200)
+    env = MicrogridEnv(microgrid_full, 100)
     env_dqn = MicrogridEnv(microgrid_full, 200, True)
+
 
     random_actor(env)
     #deep_actor(env)
-    baseline_agent_ppo(env, 1000, "PPO-full_10000")
-    #baseline_agent_dqn(env_dqn, 1000, "DQN-full_10000")
-
-
-
-
-
-
-
-
-
-
-
+    baseline_agent_ppo(env, 1000, "PPO-full_100000")
+    #baseline_agent_dqn(env_dqn, 10000, "DQN-full_10000")
 

@@ -39,7 +39,7 @@ class Data:
                 reader = csv.reader(f)
 
                 for i, row in enumerate(islice(reader, 1, len(wind_df)+1)):
-                    value = float(row[1])
+                    value = float(row[1] + row[2] + row[3] + row[4] +row[5])
                     if i == len(total_load):
                         total_load.append(value)
                     else:

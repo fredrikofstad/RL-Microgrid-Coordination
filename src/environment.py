@@ -1,5 +1,3 @@
-""" training from stable ?? """
-
 import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
@@ -17,7 +15,7 @@ class MicrogridEnv(gym.Env):
         self.discreet = discreet
 
         # action space (change status 3, solar 3, wind 3, generator 3, grid 3 battery 1
-        self.n_actions = (2,2,2,3,3,3,3,1)
+        self.n_actions = (2, 2, 2, 3, 3, 3, 3, 1)
 
         if discreet:
             self.action_space = spaces.Discrete(np.prod(self.n_actions))
@@ -29,7 +27,7 @@ class MicrogridEnv(gym.Env):
         # Define observation space
         # observations:
 
-        #TODO: Do i need status of modules?
+        # TODO: Do i need status of modules?
 
         # [solar,  wind, price, load, status of modules, charge]
 
@@ -59,7 +57,7 @@ class MicrogridEnv(gym.Env):
         self.microgrid.actions(module_actions, wind_speed)
         # return the new observation, reward, if terminated, and info
         self.reward = self.microgrid.reward(solar_actions, wind_actions, generator_actions, grid_actions,
-                                       battery_actions, solar_irradiance, wind_speed, price, load)
+                                            battery_actions, solar_irradiance, wind_speed, price, load)
 
         terminated = self.data.is_complete()
         info = self.get_info()
@@ -82,4 +80,3 @@ class MicrogridEnv(gym.Env):
             "iteration": self.data.index,
             "reward": self.reward
         }
-

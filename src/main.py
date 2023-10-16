@@ -74,7 +74,8 @@ if __name__ == "__main__":
         Battery(**battery_config),
         SolarPV(**solar_config),
         WindTurbine(**wind_config),
-        Generator(**generator_config)
+        Generator(**generator_config),
+        False
     )
 
     microgrid_solar = Microgrid(
@@ -82,13 +83,13 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
     )
 
-    env = MicrogridEnv(microgrid_full, 100)
-    env_dqn = MicrogridEnv(microgrid_full, 100, True)
+    env = MicrogridEnv(microgrid_full, 200)
+    env_dqn = MicrogridEnv(microgrid_full, 200, True)
 
     random_actor(env)
     #deep_actor(env)
-    baseline_agent_ppo(env, 10000, "PPO-full_10000")
-    baseline_agent_dqn(env_dqn, 10000, "DQN-full_10000")
+    baseline_agent_ppo(env, 1000, "PPO-full_10000")
+    #baseline_agent_dqn(env_dqn, 1000, "DQN-full_10000")
 
 
 

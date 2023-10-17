@@ -193,22 +193,22 @@ def plot_solar_both(env, info1, info2):
 
 
 
-def plot_solar(env, info_matrix, color='royalblue'):
+def plot_reward(env, info_matrix, color='royalblue'):
     time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
-    solar_sum = [sum(info_matrix[2, :i+1]) for i in range(len(info_matrix[2]))]
+    reward_sum = [sum(info_matrix[1, :i+1]) for i in range(len(info_matrix[1]))]
     data = {
         "Time": time_index,
-        "Solar_power": solar_sum,
+        "Solar_power": reward_sum,
     }
 
     df = pd.DataFrame(data)
-    fig, ax = plt.subplots(figsize=(30, 15))
+    fig, ax = plt.subplots(figsize=(10, 8))
 
     ax.plot(df["Time"], df["Solar_power"], color=color)
-
+    plt.gca().ticklabel_format(axis='y', style='plain')
     ax.set_xlabel("Time (hours)")
-    ax.set_ylabel("Energy")
-    plt.title("Energy generated from Solar power")
+    ax.set_ylabel("Reward")
+    plt.title("Total reward - 256 Households (energy purchased + operation cost - energy sold) ")
     plt.xticks(rotation=45)
     plt.show()
 

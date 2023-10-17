@@ -5,7 +5,7 @@ from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
 from src.modules.generator import Generator
 from src.environment import MicrogridEnv
-from src.plotting import plot_results, plot_solar, plot_solar_both
+from src.plotting import *
 from microgrid import Microgrid
 from agents.sb3_agent import *
 
@@ -65,10 +65,10 @@ def random_actor(env):
 
 
 def baseline_agent_ppo(env, timesteps, name):
-    start_time = time.time()
-    train_ppo(env, timesteps, name)
-    end_time = time.time()
-    print(f"Time taken: {end_time-start_time}")
+    #start_time = time.time()
+    #train_ppo(env, timesteps, name)
+    #end_time = time.time()
+    #print(f"Time taken: {end_time-start_time}")
     info_matrix = test_model(env, name, PPO)
     return info_matrix
 
@@ -79,6 +79,14 @@ def baseline_agent_dqn(env, timesteps, name):
 
 
 if __name__ == "__main__":
+    microgrid_new = Microgrid(
+        Battery(**battery_config),
+        SolarPV(**solar_config),
+        WindTurbine(**wind_config),
+        Generator(**generator_config),
+        True
+    )
+
     microgrid_full = Microgrid(
         Battery(**battery_config),
         SolarPV(**solar_config),
@@ -98,15 +106,27 @@ if __name__ == "__main__":
         WindTurbine(**wind_config),
     )
 
-    env = MicrogridEnv(microgrid_solar, 256)
-    env_dqn = MicrogridEnv(microgrid_solar, 200, True)
+    env_solar = MicrogridEnv(microgrid_solar, 100)
+    env_solar_wind = MicrogridEnv(microgrid_solar_wind, 100)
+    env_full = MicrogridEnv(microgrid_full, 100)
+    env_full_new_formula = MicrogridEnv(microgrid_full, 100)
+
+    #env_dqn = MicrogridEnv(microgrid_solar, 200, True)
     #plot_solar_both(env, random_actor(env), baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000"))
 
-    baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000")
-    #plot_solar(env, random_actor(env), "maroon")
-    #plot_solar(env, baseline_agent_ppo(env, 1000, "PPO-solar-h25-1000"))
-    #random_actor(env)
-    #deep_actor(env)
-    #baseline_agent_ppo(env, 1000, "PPO-solar-h25-1000")
-    #baseline_agent_dqn(env_dqn, 10000, "DQN-full_10000")
+    ppo_solar = baseline_agent_ppo(env_solar, 1000, "PPO-solar")
+    #rand_solar = random_actor(env_solar)
+    ppo_solar_wind = baseline_agent_ppo(env_solar_wind, 1000, "PPO-solar-wind")
+    rand_solar_wind = random_actor(env_solar_wind)
+    #ppo_full = baseline_agent_ppo(env_full, 1000, "PPO-full")
+    #rand_full = random_actor(env_full)
+    #ppo_new = baseline_agent_ppo(env_full_new_formula, 1000, "PPO-full-new")
+    #rand_new = random_actor(env_full_new_formula)
+
+    plot_q2(env_solar_wind, rand_solar_wind, ppo_solar_wind)
+    plot_q2_2(env_solar_wind, ppo_solar, ppo_solar_wind)
+    # plot_q3()
+    # plot_q4()
+
+
 

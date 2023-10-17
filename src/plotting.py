@@ -16,37 +16,31 @@ def plot_solar_both(env, info1, info2):
     gas_sum1 = [sum(info1[4, :i+1]) for i in range(len(info1[4]))]
     gas_sum2 = [sum(info2[4, :i+1]) for i in range(len(info2[4]))]
 
+    energy_sum1 = [x + y + z for x, y, z in zip(solar_sum1, wind_sum1, gas_sum1)]
+    energy_sum2 = [x + y + z for x, y, z in zip(solar_sum2, wind_sum2, gas_sum2)]
+
 
     data = {
         "Time": time_index,
         "Reward": reward_sum1,
-        "Solar_power": solar_sum1,
-        "Wind_power": wind_sum1,
-        "Gas_generator": gas_sum1,
+        "energy_generated": energy_sum1,
     }
     data2 = {
         "Time": time_index,
         "Reward": reward_sum2,
-        "Solar_power": solar_sum2,
-        "Wind_power": wind_sum2,
-        "Gas_generator": gas_sum2,
+        "energy_generated": energy_sum2,
     }
 
     df = pd.DataFrame(data)
     df2 = pd.DataFrame(data2)
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    ax.semilogy(df["Time"], df["Solar_power"], color="red", label='Random Solar')
-    ax.semilogy(df["Time"], df["Wind_power"], color="orange", label='Random Wind')
-    ax.semilogy(df["Time"], df["Gas_generator"], color='purple', label='Random Gas')
-
-    ax.semilogy(df2["Time"], df2["Solar_power"], color='blue', label='PPO Solar')
-    ax.semilogy(df2["Time"], df2["Wind_power"], color='green', label='PPO Wind')
-    ax.semilogy(df2["Time"], df2["Gas_generator"], color='cyan', label='PPO Gas')
+    ax.plot(df["Time"], df["energy_generated"], color="red", label='Random Energy generated')
+    ax.plot(df2["Time"], df2["energy_generated"], color='blue', label='PPO Energy generated')
 
     ax.set_xlabel("Time (hours)")
     ax.set_ylabel("Energy (Log scale)")
-    plt.title("Energy generated from Solar, Wind and Gas power (100 households - New energy cost)")
+    plt.title("Energy generated from Solar, Wind and Gas power (100 households)")
     plt.xticks(rotation=45)
     plt.legend()
     plt.show()

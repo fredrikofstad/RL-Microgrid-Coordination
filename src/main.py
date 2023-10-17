@@ -1,3 +1,5 @@
+import time
+
 from src.modules.battery import Battery
 from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
@@ -63,7 +65,10 @@ def random_actor(env):
 
 
 def baseline_agent_ppo(env, timesteps, name):
+    start_time = time.time()
     train_ppo(env, timesteps, name)
+    end_time = time.time()
+    print(f"Time taken: {end_time-start_time}")
     info_matrix = test_model(env, name, PPO)
     return info_matrix
 
@@ -79,7 +84,7 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
         WindTurbine(**wind_config),
         Generator(**generator_config),
-        True
+        False
     )
 
     microgrid_solar = Microgrid(

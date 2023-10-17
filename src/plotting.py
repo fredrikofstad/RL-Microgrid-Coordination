@@ -193,7 +193,7 @@ def plot_solar_both(env, info1, info2):
 
 
 
-def plot_reward(env, info_matrix, color='royalblue'):
+def plot_reward(env, info_matrix, color='maroon'):
     time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
     reward_sum = [sum(info_matrix[1, :i+1]) for i in range(len(info_matrix[1]))]
     data = {

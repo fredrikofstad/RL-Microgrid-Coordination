@@ -3,7 +3,7 @@ from src.modules.wind import WindTurbine
 from src.modules.solar import SolarPV
 from src.modules.generator import Generator
 from src.environment import MicrogridEnv
-from src.plotting import plot_results
+from src.plotting import plot_results, plot_solar, plot_solar_both
 from microgrid import Microgrid
 from agents.sb3_agent import *
 
@@ -31,12 +31,12 @@ wind_config = {
 
 solar_config = {
     "unit_operational_cost_solar": 0.15/10,  # from solar PV (10^4 $/ MegaWattHour =10 $/ kWHour ), r_omc ^s#
-    "area_solarPV": 1400 / (1000*1000),  # (km ^2=1000*1000 m^2) , a#
+    "area_solarPV": 1400/ (1000*1000),  # (km ^2=1000*1000 m^2) , a#
     "efficiency_solarPV": 0.2,  # delta
 }
 
 generator_config = {
-    "amount": 1, # amount of generators
+    "amount": 1,  # amount of generators
     "unit_operational_cost_generator": 0.55/10,  # (10^4 $/ MegaWattHour =10 $/ kWHour ), r_omc ^g#
     "rated_output_power_generator": 60/1000,  # ( MegaWatt =1000 kW), G_p#
 }
@@ -46,22 +46,26 @@ def random_actor(env):
     observation, info = env.reset()
     score = 0
     i = 0
+    info_matrix = np.zeros((9, env.data_len()))
     terminated = False
     while not terminated:
         action = env.action_space.sample()
         observation, reward, terminated, truncated, info = env.step(action)
         score += reward
+        info_list = list(info.values())
+        for j, value in enumerate(info_list):
+            info_matrix[j, i] = value
         i += 1
     print("random actor:")
     print(f"Average per hour:{score/i} Total: {score}")
-
     env.close()
+    return info_matrix
 
 
 def baseline_agent_ppo(env, timesteps, name):
-    #train_ppo(env, timesteps, name)
+    train_ppo(env, timesteps, name)
     info_matrix = test_model(env, name, PPO)
-    plot_results(env, info_matrix)
+    return info_matrix
 
 
 def baseline_agent_dqn(env, timesteps, name):
@@ -83,12 +87,19 @@ if __name__ == "__main__":
         SolarPV(**solar_config),
     )
 
+    microgrid_solar_wind = Microgrid(
+        Battery(**battery_config),
+        SolarPV(**solar_config),
+        WindTurbine(**wind_config),
+    )
+
     env = MicrogridEnv(microgrid_full, 100)
-    env_dqn = MicrogridEnv(microgrid_full, 200, True)
-
-
-    random_actor(env)
+    env_dqn = MicrogridEnv(microgrid_solar, 200, True)
+    plot_solar_both(env, random_actor(env), baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000"))
+    #plot_solar(env, random_actor(env), "maroon")
+    #plot_solar(env, baseline_agent_ppo(env, 1000, "PPO-solar-h25-1000"))
+    #random_actor(env)
     #deep_actor(env)
-    baseline_agent_ppo(env, 1000, "PPO-full_100000")
+    #baseline_agent_ppo(env, 1000, "PPO-solar-h25-1000")
     #baseline_agent_dqn(env_dqn, 10000, "DQN-full_10000")
 

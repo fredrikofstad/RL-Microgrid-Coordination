@@ -15,7 +15,7 @@ The microgrid can also buy energy from the utility grid to either support the lo
 Finally the microgrid can use the power stored in the battery to support the load. \
 \
 This is represented in the multidicrete tuple: (2, 2, 2, 3, 3, 3, 3, 2) \
-
+\
 The observation space is as follows: Three timeseries of hourly data on solar irradiance, wind speed and the price of 
 energy from the utility grid; The total load of all households connected with the microgrid <a id="1">[1]</a>; The status of the energy 
 modules connected to the microgrid; and the current charge of the battery.

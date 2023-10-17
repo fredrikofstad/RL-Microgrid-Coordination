@@ -24,15 +24,12 @@ def test_model(env, model_name, method):
     terminated = False
     score = 0
     i = 0
-
-    reward_list = []
     info_matrix = np.zeros((9, env.data_len()))
 
     while not terminated:
         action, _states = model.predict(obs, deterministic=True)
         obs, rewards, terminated, trans, info = env.step(action)
         score += rewards
-        reward_list.append(rewards)
         info_list = list(info.values())
         for j, value in enumerate(info_list):
             info_matrix[j, i] = value

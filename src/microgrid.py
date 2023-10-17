@@ -49,11 +49,20 @@ class Microgrid(object):
         return total_load * energy_price
 
     def get_info(self, solar_irradiance, wind_speed):
-        return (self.solar.energy_generated(solar_irradiance),
-                self.wind.energy_generated(wind_speed),
-                self.generator.energy_generated(None),
-                self.sell_back,
-                self.operational_cost(solar_irradiance, wind_speed))
+        if self.solar:
+            solar = self.solar.energy_generated(solar_irradiance)
+        else:
+            solar = 0
+        if self.wind:
+            wind = self.wind.energy_generated(wind_speed)
+        else:
+            wind = 0
+        if self.generator:
+            generator = self.generator.energy_generated(None)
+        else:
+            generator = 0
+
+        return solar, wind, generator, self.sell_back, self.operational_cost(solar_irradiance, wind_speed)
 
     def reward(self, solar_actions, wind_actions, generator_actions, grid_actions,
                battery_actions, solar_irradiance, wind_speed, energy_price, total_load):

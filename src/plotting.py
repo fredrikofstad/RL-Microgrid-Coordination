@@ -62,6 +62,65 @@ def plot_q2_2(env, info1, info2):
     plt.legend()
     plt.show()
 
+def plot_q3(env, info1, info2):
+
+    time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
+    reward_sum1 = [sum(info1[1, :i+1]) for i in range(len(info1[1]))]
+    reward_sum2 = [sum(info2[1, :i+1]) for i in range(len(info2[1]))]
+
+    data = {
+        "Time": time_index,
+        "Reward": reward_sum1,
+    }
+    data2 = {
+        "Time": time_index,
+        "Reward": reward_sum2,
+    }
+
+    df = pd.DataFrame(data)
+    df2 = pd.DataFrame(data2)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    ax.set_yscale('symlog')
+
+    ax.plot(df["Time"], df["Reward"], color="red", label='Random Actor Reward')
+    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Reward')
+
+    ax.set_xlabel("Time (hours)")
+    ax.set_ylabel("Reward (Log Scale)")
+    plt.title("Total reward - Solar, Wind, Gas with New Cost Formula (100 Households)")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.show()
+
+def plot_q3_2(env, info1, info2):
+
+    time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
+    reward_sum1 = [sum(info1[1, :i+1]) for i in range(len(info1[1]))]
+    reward_sum2 = [sum(info2[1, :i+1]) for i in range(len(info2[1]))]
+
+    data = {
+        "Time": time_index,
+        "Reward": reward_sum1,
+    }
+    data2 = {
+        "Time": time_index,
+        "Reward": reward_sum2,
+    }
+
+    df = pd.DataFrame(data)
+    df2 = pd.DataFrame(data2)
+    fig, ax = plt.subplots(figsize=(10, 8))
+
+    ax.plot(df["Time"], df["Reward"], color="red", label='PPO only Solar')
+    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Solar, Wind and Gas with new Cost formula')
+
+    ax.set_xlabel("Time (hours)")
+    ax.set_ylabel("Reward")
+    plt.title("Total reward (100 Households)")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.show()
+
 
 
 def plot_solar_both(env, info1, info2):

@@ -98,9 +98,11 @@ if __name__ == "__main__":
         WindTurbine(**wind_config),
     )
 
-    env = MicrogridEnv(microgrid_solar_wind, 100)
+    env = MicrogridEnv(microgrid_solar, 256)
     env_dqn = MicrogridEnv(microgrid_solar, 200, True)
-    plot_solar_both(env, random_actor(env), baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000"))
+    #plot_solar_both(env, random_actor(env), baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000"))
+
+    baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000")
     #plot_solar(env, random_actor(env), "maroon")
     #plot_solar(env, baseline_agent_ppo(env, 1000, "PPO-solar-h25-1000"))
     #random_actor(env)

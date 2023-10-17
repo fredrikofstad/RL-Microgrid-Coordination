@@ -1,3 +1,7 @@
+The timesteps are constant at 1000 steps so the times shouldn't differ much
+1000 timesteps seems to be enough to improve the reward considerably without
+taking much time to train.
+
 PPO - 100 households, solar+wind+gas with new cost
 1000 timesteps
 Time taken: 12.55 seconds
@@ -10,3 +14,14 @@ PPO - 100 households, solar+wind
 1000 timesteps
 Time taken: 13.72
 
+PPO - 256 households, solar
+1000 timesteps
+Time taken: 12.81
+
+PPO - 100 households, solar
+1000 timesteps
+Time taken: 13.21
+
+PPO - 25 households, solar
+1000 timesteps
+Time taken: 13.30

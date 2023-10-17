@@ -106,7 +106,7 @@ if __name__ == "__main__":
         WindTurbine(**wind_config),
     )
 
-    env_solar = MicrogridEnv(microgrid_solar, 100)
+    env_solar = MicrogridEnv(microgrid_solar, 256)
     env_solar_wind = MicrogridEnv(microgrid_solar_wind, 100)
     env_full = MicrogridEnv(microgrid_full, 100)
     env_full_new_formula = MicrogridEnv(microgrid_full, 100)
@@ -114,19 +114,21 @@ if __name__ == "__main__":
     #env_dqn = MicrogridEnv(microgrid_solar, 200, True)
     #plot_solar_both(env, random_actor(env), baseline_agent_ppo(env, 1000, "PPO-solar-wind-h100-1000"))
 
-    ppo_solar = baseline_agent_ppo(env_solar, 1000, "PPO-solar")
-    #rand_solar = random_actor(env_solar)
+    #ppo_solar = baseline_agent_ppo(env_solar, 1000, "PPO-solar")
+    rand_solar = random_actor(env_solar)
     #ppo_solar_wind = baseline_agent_ppo(env_solar_wind, 1000, "PPO-solar-wind")
     #rand_solar_wind = random_actor(env_solar_wind)
     #ppo_full = baseline_agent_ppo(env_full, 1000, "PPO-full")
     #rand_full = random_actor(env_full)
-    ppo_new = baseline_agent_ppo(env_full_new_formula, 1000, "PPO-full-new")
-    rand_new = random_actor(env_full_new_formula)
+    #ppo_new = baseline_agent_ppo(env_full_new_formula, 1000, "PPO-full-new")
+    #rand_new = random_actor(env_full_new_formula)
 
     #plot_q2(env_solar_wind, rand_solar_wind, ppo_solar_wind)
     #plot_q2_2(env_solar_wind, ppo_solar, ppo_solar_wind)
-    plot_q3(env_full, rand_new, ppo_new)
-    plot_q3_2(env_full, ppo_solar, ppo_new)
+    #plot_q3(env_full, rand_new, ppo_new)
+    #plot_q3_2(env_full, ppo_solar, ppo_new)
+
+    plot_reward(env_solar, rand_solar)
 
     #plot_q4()
 

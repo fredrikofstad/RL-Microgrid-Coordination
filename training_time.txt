@@ -2,6 +2,11 @@ PPO - 100 households, solar+wind+gas with new cost
 1000 timesteps
 Time taken: 12.55 seconds
 
-PPO - 100 households, solar+wind+gas with new cost
+PPO - 100 households, solar+wind+gas
 1000 timesteps
 Time taken: 12.51
+
+PPO - 100 households, solar+wind
+1000 timesteps
+Time taken: 13.72
+

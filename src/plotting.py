@@ -13,11 +13,11 @@ def plot_solar_both(env, info1, info2):
     solar_sum2 = [sum(info2[2, :i+1]) for i in range(len(info2[2]))]
     wind_sum1 = [sum(info1[3, :i+1]) for i in range(len(info1[3]))]
     wind_sum2 = [sum(info2[3, :i+1]) for i in range(len(info2[3]))]
-    gas_sum1 = [sum(info1[4, :i+1]) for i in range(len(info1[4]))]
-    gas_sum2 = [sum(info2[4, :i+1]) for i in range(len(info2[4]))]
+    #gas_sum1 = [sum(info1[4, :i+1]) for i in range(len(info1[4]))]
+    #gas_sum2 = [sum(info2[4, :i+1]) for i in range(len(info2[4]))]
 
-    energy_sum1 = [x + y + z for x, y, z in zip(solar_sum1, wind_sum1, gas_sum1)]
-    energy_sum2 = [x + y + z for x, y, z in zip(solar_sum2, wind_sum2, gas_sum2)]
+    energy_sum1 = [x + y for x, y in zip(solar_sum1, wind_sum1)]
+    energy_sum2 = [x + y for x, y in zip(solar_sum2, wind_sum2)]
 
 
     data = {
@@ -40,7 +40,7 @@ def plot_solar_both(env, info1, info2):
 
     ax.set_xlabel("Time (hours)")
     ax.set_ylabel("Energy (Log scale)")
-    plt.title("Energy generated from Solar, Wind and Gas power (100 households)")
+    plt.title("Energy generated from Solar and Wind power (100 households)")
     plt.xticks(rotation=45)
     plt.legend()
     plt.show()

@@ -2,24 +2,22 @@ from stable_baselines3 import PPO, DQN
 import numpy as np
 
 
-def train_ppo(env, timesteps, output_name="ppo_microgrid"):
+def train_ppo(env, timesteps, name):
     model = PPO("MlpPolicy", env, verbose=1,  tensorboard_log=f"./tensorboard/")
     model.learn(total_timesteps=timesteps)
-
-    model_name = f"models/{output_name}"
+    model_name = f"../models/{name}"
     model.save(model_name)
 
 
 def train_dqn(env, timesteps, output_name="dqn_microgrid"):
     model = DQN("MlpPolicy", env, verbose=1)
     model.learn(total_timesteps=timesteps, log_interval=4)
-    model_name = f"models/{output_name}"
+    model_name = f"../models/{output_name}"
     model.save(model_name)
-    return model_name
 
 
 def test_model(env, model_name, method):
-    model = method.load(f"models/{model_name}")
+    model = method.load(f"../models/{model_name}")
     obs, info = env.reset()
     terminated = False
     score = 0
@@ -39,6 +37,3 @@ def test_model(env, model_name, method):
     print(f"Average per hour:{score/i} Total: {score}")
 
     return info_matrix
-
-
-

@@ -72,28 +72,36 @@ class Microgrid(object):
         charge = 0
         module_actions = [solar_actions, wind_actions, generator_actions]
         data = [solar_irradiance, wind_speed, None]
+
+        # do module actions
         for i, action in enumerate(module_actions):
             if self.modules[i] is None:
                 continue
             if action == 0:
-                total_load - self.modules[i].energy_generated(data[i])
+                total_load -= self.modules[i].energy_generated(data[i])
             if action == 1:
-                sell_back_reward + self.modules[i].energy_generated(data[i]) * self.sellback_price
+                sell_back_reward += self.modules[i].energy_generated(data[i]) * self.sellback_price
             if action == 2:
-                charge = self.modules[i].energy_generated(data[i])
-        self.battery.charge(charge, battery_actions)
-        total_load - self.battery.support_load(battery_actions)
+                charge += self.modules[i].energy_generated(data[i])
+
+        # charge and/or discharge battery:
+        self.battery.charge(charge)
+        total_load -= self.battery.support_load(battery_actions)
 
         if grid_actions == 1:
+            # buy energy from utility grid to support load
             energy_purchased += self.cost_of_energy_purchase(total_load, energy_price)
             total_load = 0
         elif grid_actions == 2:
+            # buy energy to charge battery
             energy_purchased += self.battery.charge_full() * energy_price
 
         # Current assumption: grid needs to buy the remaining power for total load
-        energy_purchased = self.cost_of_energy_purchase(total_load, energy_price)
+        energy_purchased += self.cost_of_energy_purchase(total_load, energy_price)
+        total_load = 0
         operational_cost = self.operational_cost(solar_irradiance, wind_speed)
         self.sell_back = sell_back_reward
 
-        return -(energy_purchased + operational_cost - sell_back_reward)
+        #print(f"{energy_purchased}, {operational_cost}, {sell_back_reward}, ({energy_purchased + operational_cost - sell_back_reward})")
+        return -energy_purchased - operational_cost + sell_back_reward
 

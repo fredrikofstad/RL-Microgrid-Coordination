@@ -80,14 +80,13 @@ def plot_q3(env, info1, info2):
     df = pd.DataFrame(data)
     df2 = pd.DataFrame(data2)
     fig, ax = plt.subplots(figsize=(10, 8))
-    ax.set_yscale('symlog')
 
-    ax.plot(df["Time"], df["Reward"], color="red", label='Random Actor Reward')
-    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Reward')
+    ax.plot(df["Time"], df["Reward"], color="red", label='PPO original')
+    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO new formula')
 
     ax.set_xlabel("Time (hours)")
-    ax.set_ylabel("Reward (Log Scale)")
-    plt.title("Total reward - Solar, Wind, Gas with New Cost Formula (100 Households)")
+    ax.set_ylabel("Reward")
+    plt.title("Total reward - comparing new cost formula to old formula (100 Households)")
     plt.xticks(rotation=45)
     plt.legend()
     plt.show()

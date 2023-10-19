@@ -17,13 +17,13 @@ class Battery:
     def reset(self):
         self.soc = 0
 
-    def charge(self, charged, use):
+    def charge(self, charged):
         self.charged = charged
         self.soc += charged * self.efficiency
-        self.soc -= use / self.efficiency
         self.soc = np.clip(self.soc, self.soc_min, self.soc_max)
 
     def charge_full(self):
+        # but from grid to fully charge battery
         charge = self.soc_max - self.soc
         self.soc = self.soc_max
         return charge
@@ -32,7 +32,7 @@ class Battery:
         # support the load with available charge
         if battery_actions == 1:
             support = self.soc * self.efficiency
-            self.soc = 0
+            self.soc = self.soc_min
             return support
         return 0
 
@@ -42,13 +42,14 @@ class Battery:
 
 if __name__ == "__main__":
     battery_config = {
-        "operational_cost": 0.95/10,
-        "capacity": 300/1000,
+        "cost": 0.95,
+        "capacity": 300,
         "soc_max": 0.95,
         "soc_min": 0.05,
         "efficiency": 0.95,
     }
-
     test_battery = Battery(**battery_config)
-    test_battery.charge(0.5, 0.5)
+    print(test_battery.soc_max)
+    print(test_battery.soc_min)
+    test_battery.charge(300, 10)
     print(test_battery.soc_status())

@@ -23,6 +23,7 @@ class MicrogridEnv(gym.Env):
             self.action_space = spaces.MultiDiscrete(list(self.n_actions))
         self.observation = []
         self.reward = 0
+        self.households = household_num
 
         # Define observation space
         # observations:

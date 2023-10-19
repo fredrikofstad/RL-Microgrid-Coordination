@@ -26,6 +26,7 @@ class Data:
     def get_observation(self):
         index = self.index
         self.index += 1
+        # *10 to get price per kWh
         return self.solar_ts[index], self.wind_ts[index], self.energy_price_ts[index]*10, self.total_load_ts[index]
 
     def reset(self):

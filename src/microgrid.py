@@ -1,5 +1,6 @@
 class Microgrid(object):
     def __init__(self, battery, solar=None, wind=None, generator=None, new_cost_equation=False):
+        self.purchase = 0
         self.battery = battery
         self.solar = solar
         self.wind = wind
@@ -83,25 +84,33 @@ class Microgrid(object):
                 sell_back_reward += self.modules[i].energy_generated(data[i]) * self.sellback_price
             if action == 2:
                 charge += self.modules[i].energy_generated(data[i])
-
+        if total_load < 0:
+            total_load = 0
         # charge and/or discharge battery:
         self.battery.charge(charge)
         total_load -= self.battery.support_load(battery_actions)
 
         if grid_actions == 1:
+            pass
             # buy energy from utility grid to support load
-            energy_purchased += self.cost_of_energy_purchase(total_load, energy_price)
-            total_load = 0
+            #energy_purchased += self.cost_of_energy_purchase(total_load, energy_price)
+            #total_load = 0
         elif grid_actions == 2:
             # buy energy to charge battery
             energy_purchased += self.battery.charge_full() * energy_price
 
         # Current assumption: grid needs to buy the remaining power for total load
         energy_purchased += self.cost_of_energy_purchase(total_load, energy_price)
+        self.purchase = total_load
         total_load = 0
         operational_cost = self.operational_cost(solar_irradiance, wind_speed)
-        self.sell_back = sell_back_reward
+        self.sell_back = sell_back_reward / self.sellback_price
 
         #print(f"{energy_purchased}, {operational_cost}, {sell_back_reward}, ({energy_purchased + operational_cost - sell_back_reward})")
-        return -energy_purchased - operational_cost + sell_back_reward
+        return -(energy_purchased + operational_cost - sell_back_reward)
 
+
+if __name__ == "__main__":
+    cost_new = 0.25 * 100**2 * 0.8 + 0.5 * 100 * 0.8
+    cost = 100 * 0.8
+    print(f"new: {cost_new}, old: {cost}")

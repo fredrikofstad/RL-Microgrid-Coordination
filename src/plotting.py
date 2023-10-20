@@ -33,7 +33,7 @@ def plot_q2(env, info1, info2):
     plt.legend()
     plt.show()
 
-def plot_q2_2(env, info1, info2):
+def plot_compare_rand(env, info1, info2):
 
     time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
     reward_sum1 = [sum(info1[1, :i+1]) for i in range(len(info1[1]))]
@@ -51,9 +51,10 @@ def plot_q2_2(env, info1, info2):
     df = pd.DataFrame(data)
     df2 = pd.DataFrame(data2)
     fig, ax = plt.subplots(figsize=(10, 8))
+    ax.ticklabel_format(style='plain')
 
-    ax.plot(df["Time"], df["Reward"], color="red", label='PPO only Solar')
-    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Solar and Wind')
+    ax.plot(df["Time"], df["Reward"], color="red", label='Random Solar Wind and Gas (new cost formula)')
+    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Solar Wind and Gas (new cost formula)')
 
     ax.set_xlabel("Time (hours)")
     ax.set_ylabel("Reward")
@@ -62,7 +63,7 @@ def plot_q2_2(env, info1, info2):
     plt.legend()
     plt.show()
 
-def plot_q3(env, info1, info2):
+def plot_compare_ppo(env, info1, info2):
 
     time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
     reward_sum1 = [sum(info1[1, :i+1]) for i in range(len(info1[1]))]
@@ -80,13 +81,51 @@ def plot_q3(env, info1, info2):
     df = pd.DataFrame(data)
     df2 = pd.DataFrame(data2)
     fig, ax = plt.subplots(figsize=(10, 8))
+    ax.ticklabel_format(style='plain')
 
-    ax.plot(df["Time"], df["Reward"], color="red", label='PPO original')
-    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO new formula')
+    ax.plot(df["Time"], df["Reward"], color="red", label='PPO Solar Wind and Gas')
+    ax.plot(df2["Time"], df2["Reward"], color='blue', label='PPO Solar Wind and Gas (new cost formula)')
 
     ax.set_xlabel("Time (hours)")
     ax.set_ylabel("Reward")
-    plt.title("Total reward - comparing new cost formula to old formula (100 Households)")
+    plt.title("Total reward (100 Households)")
+    plt.xticks(rotation=45)
+    plt.legend()
+    plt.show()
+
+def plot_energy(env, info1, title):
+
+    time_index = pd.date_range(start='2016-01-01', periods=env.data_len(), freq='H')
+    #reward_sum1 = [sum(info1[1, :i+1]) for i in range(len(info1[1]))]
+    solar_sum = [sum(info1[2, :i+1]) for i in range(len(info1[2]))]
+    wind_sum = [sum(info1[3, :i+1]) for i in range(len(info1[3]))]
+    gas_sum = [sum(info1[4, :i+1]) for i in range(len(info1[4]))]
+    sellback_sum = [sum(info1[5, :i+1]) for i in range(len(info1[4]))]
+    purchase_sum = [sum(info1[6, :i+1]) for i in range(len(info1[4]))]
+
+    data = {
+        "Time": time_index,
+        "Solar": solar_sum,
+        "Wind": wind_sum,
+        "Gas": gas_sum,
+        "Sellback": sellback_sum,
+        "Purchase": purchase_sum
+    }
+
+    df = pd.DataFrame(data)
+    fig, ax = plt.subplots(figsize=(10, 8))
+    ax.ticklabel_format(style='plain')
+
+    ax.plot(df["Time"], df["Solar"], color="red", label='Solar Power')
+    ax.plot(df["Time"], df["Wind"], color="blue", label='Wind Power')
+    ax.plot(df["Time"], df["Gas"], color="green", label='Gas Power')
+    ax.plot(df["Time"], df["Sellback"], color="purple", label='Energy Sold back')
+    ax.plot(df["Time"], df["Purchase"], color="orange", label='Energy Purchased')
+
+
+    ax.set_xlabel("Time (hours)")
+    ax.set_ylabel("Energy (kWh)")
+    plt.title(title)
     plt.xticks(rotation=45)
     plt.legend()
     plt.show()

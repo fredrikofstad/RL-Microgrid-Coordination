@@ -77,6 +77,7 @@ class MicrogridEnv(gym.Env):
     def get_info(self):
         solar, wind, generator, sell_back, operational_cost = self.microgrid.get_info(self.observation[0],
                                                                                       self.observation[1])
+        purchase = self.microgrid.purchase
         return {
             "iteration": self.data.index,
             "reward": self.reward,
@@ -84,6 +85,7 @@ class MicrogridEnv(gym.Env):
             "wind_energy": wind,
             "generator_energy": generator,
             "sell_back": sell_back,
+            "purchase": purchase,
             "operational_cost": operational_cost
         }
 

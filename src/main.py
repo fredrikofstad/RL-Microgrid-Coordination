@@ -119,9 +119,9 @@ if __name__ == "__main__":
     #rand_solar = random_actor(env_solar)
     #ppo_solar_wind = baseline_agent_ppo(env_solar_wind, 30000)
     #rand_solar_wind = random_actor(env_solar_wind)
-    ppo_full = baseline_agent_ppo(env_full, 50_000)
+    ppo_full = baseline_agent_ppo(env_full, 100_000)
     #rand_full = random_actor(env_full)
-    ppo_new = baseline_agent_ppo(env_full_new_formula, 50_000)
+    ppo_new = baseline_agent_ppo(env_full_new_formula, 100_000)
     #rand_new = random_actor(env_full_new_formula)
 
     #plot_q2(env_solar_wind, rand_solar_wind, ppo_solar_wind)
